@@ -175,3 +175,7 @@ cython_debug/
 
 # MAC
 .DS_Store
+
+# terraform
+*.tfstate
+*.tfstate.backup
