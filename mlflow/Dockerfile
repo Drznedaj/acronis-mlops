@@ -2,7 +2,11 @@ FROM python:3.12-slim
 
 RUN pip install mlflow scikit-learn pandas matplotlib
 
-EXPOSE 5000
+RUN useradd -m -u 1000 mlflow && \
+    mkdir -p /mlflow/db /mlflow/artifacts && \
+    chown -R mlflow:mlflow /mlflow && \
+    chmod -R 755 /mlflow
 
-ENTRYPOINT ["mlflow"]
-CMD ["server", "--backend-store-uri", "sqlite:///mlflow.db", "--default-artifact-root", "/mlflow/artifacts", "--host", "0.0.0.0"]
+USER mlflow
+
+EXPOSE 5000
