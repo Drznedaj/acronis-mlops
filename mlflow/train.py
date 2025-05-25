@@ -60,8 +60,8 @@ def plot_feature_importance(importances, feature_names):
     plt.xticks(range(len(importances)), [feature_names[i] for i in indices], rotation=90)
     plt.tight_layout()
 
-    os.makedirs("artifacts", exist_ok=True)
-    plot_path = f"{os.path.dirname(os.path.abspath(__file__))}/artifacts/feature_importance.png"
+    os.makedirs("mlflow/artifacts", exist_ok=True)
+    plot_path = "mlflow/artifacts/feature_importance.png"
     plt.savefig(plot_path)
     return plot_path
 
@@ -92,11 +92,14 @@ def train_model(dataset_type, n_estimators, max_depth, mlflow_uri):
 
         # Log feature importance chart
         plot_path = plot_feature_importance(model.feature_importances_, X_train.columns)
-        print(plot_path)
-        mlflow.log_artifact("artifacts/feature_importance.png")
+        print("Artifact URI:", mlflow.get_artifact_uri())
+        mlflow.log_artifact(plot_path)
 
         # Log model
         mlflow.sklearn.log_model(model, artifact_path="model")
+        # os.makedirs("artifacts", exist_ok=True)
+        # joblib.dump(model, "artifacts/model.pkl")
+        # mlflow.log_artifact("artifacts/model.pkl", artifact_path="model")
 
         print(f"Logged MLflow run for dataset={dataset_type} with accuracy={acc:.3f}, AUC={auc:.3f}")
 

@@ -38,12 +38,14 @@ resource "docker_image" "mlflow" {
   }
 }
 
-resource "docker_volume" "mlflow_db" {
-  name = "mlflow_db"
-}
-
-resource "docker_volume" "mlflow_artifacts" {
-  name = "mlflow_artifacts"
+resource "docker_volume" "mlflow_storage" {
+  name = "mlflow_storage"
+  
+  driver_opts = {
+    type   = "none"
+    device = "/Users/nemanjazaric/repos/acronis-mlops/mlflow"
+    o      = "bind"
+  }
 }
 
 resource "docker_container" "mlflow" {
@@ -55,14 +57,11 @@ resource "docker_container" "mlflow" {
     external = 5001
   }
 
+  # Single volume mounted at /mlflow
   volumes {
-    volume_name    = docker_volume.mlflow_db.name
-    container_path = "/mlflow/db"
-  }
-
-  volumes {
-    volume_name    = docker_volume.mlflow_artifacts.name
-    container_path = "/mlflow/artifacts"
+    volume_name    = docker_volume.mlflow_storage.name
+    container_path = "/tmp/mlflow"
+    read_only      = false
   }
 
   networks_advanced {
@@ -72,8 +71,8 @@ resource "docker_container" "mlflow" {
   command = [
     "mlflow", "server",
     "--backend-store-uri", "sqlite:////mlflow/db/mlflow.db",
-    "--default-artifact-root", "file:/mlflow/artifacts",
-    "--artifacts-destination", "/mlflow/artifacts",
+    "--default-artifact-root", "file:/tmp/mlflow/artifacts",
+    "--artifacts-destination", "/tmp/mlflow/artifacts",
     "--serve-artifacts",
     "--host", "0.0.0.0"
   ]
