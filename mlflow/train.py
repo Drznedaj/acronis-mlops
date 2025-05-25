@@ -1,6 +1,7 @@
 import argparse
 import mlflow
 import mlflow.sklearn
+from mlflow.models.signature import infer_signature
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -92,14 +93,18 @@ def train_model(dataset_type, n_estimators, max_depth, mlflow_uri):
 
         # Log feature importance chart
         plot_path = plot_feature_importance(model.feature_importances_, X_train.columns)
-        print("Artifact URI:", mlflow.get_artifact_uri())
         mlflow.log_artifact(plot_path)
 
         # Log model
-        mlflow.sklearn.log_model(model, artifact_path="model")
-        # os.makedirs("artifacts", exist_ok=True)
-        # joblib.dump(model, "artifacts/model.pkl")
-        # mlflow.log_artifact("artifacts/model.pkl", artifact_path="model")
+        input_example = X_train.iloc[:1]  # One sample input
+        signature = infer_signature(X_train, model.predict(X_train))
+
+        mlflow.sklearn.log_model(
+            sk_model=model,
+            artifact_path="model",
+            input_example=input_example,
+            signature=signature
+        )
 
         print(f"Logged MLflow run for dataset={dataset_type} with accuracy={acc:.3f}, AUC={auc:.3f}")
 
