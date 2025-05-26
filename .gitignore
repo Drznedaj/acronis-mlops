@@ -182,6 +182,9 @@ cython_debug/
 
 # mlflow
 *.png
+*.pkl
 
 # airflow
 logs/*
+latest
+models/*

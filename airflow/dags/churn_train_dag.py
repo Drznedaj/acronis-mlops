@@ -71,9 +71,9 @@ def churn_training_pipeline():
         print(f"📦 Registered model: {result.name}, version: {result.version}")
 
         # === Save model as .pkl
-        local_dir = "/opt/airflow/model_pickles"
+        local_dir = "/opt/airflow/models"
         os.makedirs(local_dir, exist_ok=True)
-        local_pickle_path = os.path.join(local_dir, f"best_model_{run_id}.pkl")
+        local_pickle_path = os.path.join(local_dir, f"best_model.pkl")
 
         model = mlflow.sklearn.load_model(model_uri)
         with open(local_pickle_path, "wb") as f:

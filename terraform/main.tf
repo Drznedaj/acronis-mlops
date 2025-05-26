@@ -77,3 +77,54 @@ resource "docker_container" "mlflow" {
     "--host", "0.0.0.0"
   ]
 }
+
+resource "docker_image" "mlflow_model_api" {
+  name = "mlflow-model-api"
+  build {
+    context = abspath("${path.module}/../mlflow_model_server")
+  }
+}
+
+resource "docker_volume" "models" {
+  name = "models"
+
+  driver_opts = {
+    type   = "none"
+    device = "/Users/nemanjazaric/repos/acronis-mlops/airflow/models"
+    o      = "bind"
+  }
+}
+
+resource "docker_container" "model_api" {
+  name  = "model_api"
+  image = docker_image.mlflow_model_api.name
+
+  ports {
+    internal = 8000
+    external = 8000
+  }
+
+  env = [
+    "MLFLOW_TRACKING_URI=http://mlflow:5001"
+  ]
+
+  volumes {
+    volume_name    = docker_volume.models.name
+    container_path = "/opt/models"
+    read_only      = true
+  }
+
+  networks_advanced {
+    name = docker_network.mlflow_net.name
+  }
+
+  depends_on = [
+    docker_container.mlflow
+  ]
+
+  command = [
+    "uvicorn", "main:app",
+    "--host", "0.0.0.0",
+    "--port", "8000"
+  ]
+}
