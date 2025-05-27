@@ -1,10 +1,10 @@
-from airflow.decorators import dag, task
-from datetime import timedelta
 import subprocess
 import mlflow
 import pickle
 import os
 import pendulum
+from airflow.decorators import dag, task
+from datetime import timedelta
 
 DATASETS = ["sample", "full"]
 MLFLOW_URI = "http://host.docker.internal:5001"
