@@ -179,6 +179,7 @@ cython_debug/
 # terraform
 *.tfstate
 *.tfstate.backup
+.terraform*
 
 # mlflow
 *.png

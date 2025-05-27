@@ -111,7 +111,7 @@ resource "docker_container" "model_api" {
   volumes {
     volume_name    = docker_volume.models.name
     container_path = "/opt/models"
-    read_only      = true
+    read_only      = false
   }
 
   networks_advanced {
