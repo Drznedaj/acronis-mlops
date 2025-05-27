@@ -86,7 +86,7 @@ Go to Airflow at [http://localhost:8080](http://localhost:8080):
 ## 🔬 Predicting with FastAPI
 
 ```bash
-curl -X POST http://localhost:8000/predict   -H "Content-Type: application/json"   -d @mlflow_model_server input_example.json
+curl -X POST http://localhost:8000/predict   -H "Content-Type: application/json"   -d @mlflow_model_server/input_example.json
 ```
 
 ### ✅ Example Response

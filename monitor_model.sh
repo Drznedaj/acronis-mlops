@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG_FILE="./airflow/models/model_server.log"
+LOG_FILE="airflow/models/model_server.log"
 NOW=$(date '+%Y-%m-%d %H')
 THRESHOLD_MS=500  # warning if avg latency > 500ms
 ERROR_LIMIT=5     # warning if errors in the last hour > 5
